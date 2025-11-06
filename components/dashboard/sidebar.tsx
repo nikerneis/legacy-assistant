@@ -4,21 +4,39 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  MessageSquare,
+  Zap,
+  Calendar,
+  Mail,
+  Mic,
+  History,
+  Settings,
+  User,
+  Plus,
+  LogOut,
+  Sparkles,
+  Workflow,
+} from "lucide-react"
+import { PremiumBadge } from "@/components/ui/premium-badge"
+import { useTrialStatus } from "@/hooks/use-trial"
 
 const navigation = [
-  { name: "AI Assistant", href: "/dashboard", icon: "💬" },
-  { name: "AI Modes", href: "/dashboard/modes", icon: "🎯" },
-  { name: "Planning", href: "/dashboard/planning", icon: "📅" },
-  { name: "Email", href: "/dashboard/email", icon: "📧" },
-  { name: "Voice Assistant", href: "/dashboard/voice", icon: "🎤" },
-  { name: "History", href: "/dashboard/history", icon: "📜" },
-  { name: "Settings", href: "/dashboard/settings", icon: "⚙️" },
-  { name: "Profile", href: "/dashboard/profile", icon: "👤" },
+  { name: "AI Assistant", href: "/dashboard", icon: MessageSquare, premium: false },
+  { name: "AI Modes", href: "/dashboard/modes", icon: Zap, premium: true },
+  { name: "Planning", href: "/dashboard/planning", icon: Calendar, premium: true },
+  { name: "Automations", href: "/dashboard/automations", icon: Workflow, premium: true },
+  { name: "Email", href: "/dashboard/email", icon: Mail, premium: true },
+  { name: "Voice Assistant", href: "/dashboard/voice", icon: Mic, premium: true },
+  { name: "History", href: "/dashboard/history", icon: History, premium: false },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings, premium: false },
+  { name: "Profile", href: "/dashboard/profile", icon: User, premium: false },
 ]
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
   const router = useRouter()
+  const trialStatus = useTrialStatus()
 
   const handleNewConversation = () => {
     router.push("/dashboard")
@@ -30,14 +48,14 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
-        <span className="text-xl">✨</span>
+        <Sparkles className="h-5 w-5 text-sidebar-foreground" />
         <span className="text-lg font-bold text-sidebar-foreground">Legacy</span>
       </div>
 
       {/* New Conversation Button */}
       <div className="border-b border-sidebar-border p-4">
         <Button onClick={handleNewConversation} className="w-full justify-start gap-2" variant="default">
-          <span>➕</span>
+          <Plus className="h-4 w-4" />
           New Conversation
         </Button>
       </div>
@@ -47,20 +65,28 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <nav className="space-y-1">
           {navigation.map((item) => {
             const isActive = pathname === item.href
+            const Icon = item.icon
+            const showPremiumBadge = item.premium && trialStatus.isActive
+
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={onNavigate}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors justify-between group",
                   isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
                 )}
               >
-                <span className="text-base">{item.icon}</span>
-                {item.name}
+                <div className="flex items-center gap-3">
+                  <Icon className="h-4 w-4" />
+                  {item.name}
+                </div>
+                {showPremiumBadge && (
+                  <PremiumBadge className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                )}
               </Link>
             )
           })}
@@ -74,7 +100,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           variant="ghost"
           className="w-full justify-start gap-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
-          <span>🚪</span>
+          <LogOut className="h-4 w-4" />
           Logout
         </Button>
       </div>

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useSpeech } from "@/hooks/use-speech"
+import { Volume2, User } from "lucide-react"
 
 interface Message {
   id: string
@@ -29,9 +30,7 @@ export function ChatMessage({ message }: { message: Message }) {
     <div className={cn("flex gap-3", isUser ? "flex-row-reverse" : "flex-row")}>
       {/* Avatar */}
       <Avatar className={cn("h-8 w-8", isUser ? "bg-primary" : "bg-primary/10")}>
-        <AvatarFallback>
-          <span className="text-base">{isUser ? "👤" : "✨"}</span>
-        </AvatarFallback>
+        <AvatarFallback>{isUser ? <User className="h-4 w-4" /> : <span className="text-sm">✨</span>}</AvatarFallback>
       </Avatar>
 
       {/* Message Content */}
@@ -64,7 +63,7 @@ export function ChatMessage({ message }: { message: Message }) {
           </span>
           {!isUser && (
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleSpeak}>
-              <span className={cn("text-sm", isSpeaking && "text-primary")}>🔊</span>
+              <Volume2 className={cn("h-4 w-4", isSpeaking && "text-primary")} />
             </Button>
           )}
         </div>

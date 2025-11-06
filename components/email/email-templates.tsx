@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { FileText } from "lucide-react"
 
 interface EmailTemplate {
   id: string
@@ -53,7 +54,7 @@ export function EmailTemplates({ onUseTemplate }: EmailTemplatesProps) {
         <Card key={template.id}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <span className="text-xl">📄</span>
+              <FileText className="h-5 w-5" />
               {template.name}
             </CardTitle>
             <CardDescription>{template.description}</CardDescription>

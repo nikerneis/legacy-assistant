@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useState, useTransition } from "react"
 import { signup } from "../actions"
+import { migrateTrialDataToAccount } from "@/lib/trial-utils"
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null)
@@ -36,6 +36,11 @@ export default function SignUpPage() {
       const result = await signup(formData)
       if (result?.error) {
         setError(result.error)
+      } else {
+        const userId = result?.userId
+        if (userId) {
+          migrateTrialDataToAccount(userId)
+        }
       }
     })
   }

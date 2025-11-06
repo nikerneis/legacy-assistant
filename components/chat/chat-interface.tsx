@@ -13,8 +13,14 @@ import { ImageGenerator } from "./image-generator"
 import { useChat } from "@/hooks/use-chat"
 import { useVoice } from "@/hooks/use-voice"
 import type { AiMode } from "@/lib/ai-modes"
+import { ImageIcon, Mic, Send, Loader2, MessageSquare } from "lucide-react"
 
-export function ChatInterface() {
+interface ChatInterfaceProps {
+  isTrialMode?: boolean
+  restrictedModes?: AiMode[]
+}
+
+export function ChatInterface({ isTrialMode = false, restrictedModes = [] }: ChatInterfaceProps) {
   const [input, setInput] = useState("")
   const [currentMode, setCurrentMode] = useState<AiMode>("assistance")
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -59,7 +65,6 @@ export function ChatInterface() {
     const message = input.trim()
     setInput("")
 
-    // Handle file upload if present
     if (selectedFile) {
       await uploadAndAnalyzeFile(selectedFile, message)
       setSelectedFile(null)
@@ -109,12 +114,19 @@ export function ChatInterface() {
       <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
         <div>
           <h2 className="text-sm font-medium text-muted-foreground">AI Mode</h2>
+          {isTrialMode && <p className="text-xs text-amber-600">Trial: AI Assistant mode only</p>}
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={() => setIsImageDialogOpen(true)} title="Generate Image">
-            <span className="text-lg">🖼️</span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsImageDialogOpen(true)}
+            title="Generate Image"
+            disabled={isTrialMode}
+          >
+            <ImageIcon className="h-4 w-4" />
           </Button>
-          <ModeSelector value={currentMode} onChange={setCurrentMode} />
+          <ModeSelector value={currentMode} onChange={setCurrentMode} disabledModes={restrictedModes} />
         </div>
       </div>
 
@@ -123,8 +135,8 @@ export function ChatInterface() {
         {messages.length === 0 ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-3xl">
-                💬
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <MessageSquare className="h-8 w-8 text-primary" />
               </div>
               <h2 className="mb-2 text-2xl font-semibold">Start a conversation</h2>
               <p className="text-muted-foreground">Ask me anything, upload files, or generate images</p>
@@ -137,7 +149,7 @@ export function ChatInterface() {
             ))}
             {isLoading && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <span className="animate-spin text-lg">⏳</span>
+                <Loader2 className="h-4 w-4 animate-spin" />
                 <span className="text-sm">Thinking...</span>
               </div>
             )}
@@ -172,7 +184,7 @@ export function ChatInterface() {
                   className="absolute bottom-2 right-2"
                   onClick={toggleVoice}
                 >
-                  <span className="text-lg">{isListening ? "🔴" : "🎤"}</span>
+                  <Mic className={`h-4 w-4 ${isListening ? "text-red-500" : ""}`} />
                 </Button>
               )}
             </div>
@@ -182,7 +194,7 @@ export function ChatInterface() {
               className="h-[60px] w-[60px]"
               disabled={(!input.trim() && !selectedFile) || isLoading}
             >
-              <span className="text-xl">{isLoading ? "⏳" : "📤"}</span>
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </div>
           {isListening && <p className="mt-2 text-sm text-muted-foreground">Listening... Speak now</p>}

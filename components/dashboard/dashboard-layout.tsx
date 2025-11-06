@@ -6,8 +6,15 @@ import { useState } from "react"
 import { Sidebar } from "./sidebar"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Menu } from "lucide-react"
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+interface DashboardLayoutProps {
+  children: React.ReactNode
+  isTrialMode?: boolean
+  daysRemaining?: number
+}
+
+export function DashboardLayout({ children, isTrialMode = false, daysRemaining = 0 }: DashboardLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -31,7 +38,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)}>
-                <span className="text-xl">☰</span>
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
           </Sheet>

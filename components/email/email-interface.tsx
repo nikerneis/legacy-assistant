@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { EmailHistory } from "./email-history"
 import { EmailTemplates } from "./email-templates"
+import { Mail, Sparkles, FileText, Loader2, Send } from "lucide-react"
 
 interface EmailInterfaceProps {
   userId: string
@@ -122,15 +123,15 @@ export function EmailInterface({ userId }: EmailInterfaceProps) {
         <Tabs defaultValue="compose" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="compose">
-              <span className="mr-2">📧</span>
+              <Mail className="mr-2 h-4 w-4" />
               Compose
             </TabsTrigger>
             <TabsTrigger value="templates">
-              <span className="mr-2">✨</span>
+              <FileText className="mr-2 h-4 w-4" />
               Templates
             </TabsTrigger>
             <TabsTrigger value="history">
-              <span className="mr-2">📜</span>
+              <Sparkles className="mr-2 h-4 w-4" />
               History
             </TabsTrigger>
           </TabsList>
@@ -174,12 +175,12 @@ export function EmailInterface({ userId }: EmailInterfaceProps) {
                     >
                       {isGenerating ? (
                         <>
-                          <span className="mr-2 animate-spin">⏳</span>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Generating...
                         </>
                       ) : (
                         <>
-                          <span className="mr-2">✨</span>
+                          <Sparkles className="mr-2 h-4 w-4" />
                           Generate with AI
                         </>
                       )}
@@ -198,12 +199,12 @@ export function EmailInterface({ userId }: EmailInterfaceProps) {
                 <Button onClick={handleSendEmail} disabled={isSending} className="w-full">
                   {isSending ? (
                     <>
-                      <span className="mr-2 animate-spin">⏳</span>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <span className="mr-2">📤</span>
+                      <Send className="mr-2 h-4 w-4" />
                       Send Email
                     </>
                   )}
