@@ -9,11 +9,13 @@ import Link from "next/link"
 import { useState, useTransition } from "react"
 import { signup } from "../actions"
 import { migrateTrialDataToAccount } from "@/lib/trial-utils"
-import { ArrowLeft } from 'lucide-react' // Added back button icon
+import { ArrowLeft } from "lucide-react" // Added back button icon
+import Captcha from "@/components/captcha" // Added CAPTCHA component
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [captchaVerified, setCaptchaVerified] = useState(false) // Added verification state
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -33,6 +35,11 @@ export default function SignUpPage() {
       return
     }
 
+    if (!captchaVerified) {
+      setError("Please verify the CAPTCHA")
+      return
+    }
+
     startTransition(async () => {
       const result = await signup(formData)
       if (result?.error) {
@@ -46,14 +53,21 @@ export default function SignUpPage() {
     })
   }
 
+  const handleCaptchaVerify = (verified: boolean) => {
+    setCaptchaVerified(verified)
+  }
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-6">
       <div className="w-full max-w-md">
-        <Link href="/" className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors"
+        >
           <ArrowLeft className="h-4 w-4" />
           <span className="text-sm">Back to home</span>
         </Link>
-        
+
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight">Legacy</h1>
           <p className="mt-2 text-muted-foreground">Advanced AI Assistant</p>
@@ -82,8 +96,11 @@ export default function SignUpPage() {
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input id="confirmPassword" name="confirmPassword" type="password" required className="h-11" />
                 </div>
+                <div className="grid gap-2">
+                  <Captcha onVerify={handleCaptchaVerify} />
+                </div>
                 {error && <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>}
-                <Button type="submit" className="h-11 w-full" disabled={isPending}>
+                <Button type="submit" className="h-11 w-full" disabled={isPending || !captchaVerified}>
                   {isPending ? "Creating account..." : "Create account"}
                 </Button>
               </div>
