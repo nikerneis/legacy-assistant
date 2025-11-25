@@ -17,20 +17,24 @@ import {
   LogOut,
   Sparkles,
   Workflow,
+  BookOpen,
 } from "lucide-react"
 import { PremiumBadge } from "@/components/ui/premium-badge"
 import { useTrialStatus } from "@/hooks/use-trial"
+import { CreditsDisplay } from "@/components/credits-display"
 
 const navigation = [
   { name: "AI Assistant", href: "/dashboard", icon: MessageSquare, premium: false },
   { name: "AI Modes", href: "/dashboard/modes", icon: Zap, premium: true },
-  { name: "Planning", href: "/dashboard/planning", icon: Calendar, premium: true },
+  { name: "Planning", href: "/dashboard/planning", icon: Calendar, premium: false },
+  { name: "Notes", href: "/dashboard/notes", icon: BookOpen, premium: false },
   { name: "Automations", href: "/dashboard/automations", icon: Workflow, premium: true },
   { name: "Email", href: "/dashboard/email", icon: Mail, premium: true },
-  { name: "Voice Assistant", href: "/dashboard/voice", icon: Mic, premium: true },
+  { name: "Voice Assistant", href: "/dashboard/voice", icon: Mic, premium: false },
   { name: "History", href: "/dashboard/history", icon: History, premium: false },
   { name: "Settings", href: "/dashboard/settings", icon: Settings, premium: false },
   { name: "Profile", href: "/dashboard/profile", icon: User, premium: false },
+  { name: "Shop", href: "/dashboard/shop", icon: Sparkles, premium: false },
 ]
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -46,10 +50,16 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Logo */}
-      <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-4">
-        <Sparkles className="h-5 w-5 text-sidebar-foreground" />
-        <span className="text-lg font-bold text-sidebar-foreground">Legacy</span>
+      {/* Logo and Credits Display */}
+      <div className="border-b border-sidebar-border px-4 py-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-sidebar-foreground" />
+            <span className="text-lg font-bold text-sidebar-foreground">Legacy</span>
+          </div>
+        </div>
+        {/* Credits Display */}
+        <CreditsDisplay />
       </div>
 
       {/* New Conversation Button */}

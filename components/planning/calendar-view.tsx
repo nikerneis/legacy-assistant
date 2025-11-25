@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { format, startOfMonth, endOfMonth } from "date-fns"
-import { Clock } from "lucide-react"
+import { Clock } from 'lucide-react'
 import type { DayContentProps } from "react-day-picker"
 
 interface Event {
@@ -24,9 +24,11 @@ interface Event {
 interface CalendarViewProps {
   userId: string
   onDateSelect?: (date: Date | undefined) => void
+  isReadOnly?: boolean
+  maxTasks?: number
 }
 
-export function CalendarView({ userId, onDateSelect }: CalendarViewProps) {
+export function CalendarView({ userId, onDateSelect, isReadOnly = false, maxTasks }: CalendarViewProps) {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [events, setEvents] = useState<Event[]>([])
   const [monthEvents, setMonthEvents] = useState<Event[]>([])
@@ -75,15 +77,17 @@ export function CalendarView({ userId, onDateSelect }: CalendarViewProps) {
     onDateSelect?.(newDate)
   }
 
-  const dayEvents = events.filter((event) => {
-    if (!date) return false
-    const eventDate = new Date(event.start_time)
-    return (
-      eventDate.getDate() === date.getDate() &&
-      eventDate.getMonth() === date.getMonth() &&
-      eventDate.getFullYear() === date.getFullYear()
-    )
-  })
+  const dayEvents = events
+    .filter((event) => {
+      if (!date) return false
+      const eventDate = new Date(event.start_time)
+      return (
+        eventDate.getDate() === date.getDate() &&
+        eventDate.getMonth() === date.getMonth() &&
+        eventDate.getFullYear() === date.getFullYear()
+      )
+    })
+    .slice(0, maxTasks ? maxTasks : undefined) // Add task limit for free tier
 
   const renderDayContent = (props: DayContentProps) => {
     const dayEvents = monthEvents.filter((event) => {
@@ -127,6 +131,7 @@ export function CalendarView({ userId, onDateSelect }: CalendarViewProps) {
             components={{
               DayContent: renderDayContent,
             }}
+            disabled={isReadOnly} // Add read-only functionality
           />
         </CardContent>
       </Card>

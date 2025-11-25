@@ -1,20 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { generateText } from "ai"
 import { AI_MODES, type AiMode } from "@/lib/ai-modes"
+import { getProviderForMode } from "@/lib/ai-providers"
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
     const { message, mode = "assistance" } = await request.json()
 
     if (!message) {
@@ -24,6 +14,8 @@ export async function POST(request: NextRequest) {
     const modeConfig = AI_MODES[mode as AiMode] || AI_MODES.assistance
     const systemPrompt = modeConfig.systemPrompt
 
+    const provider = getProviderForMode(mode as AiMode)
+
     if (modeConfig.generateImage) {
       return NextResponse.json({
         message: `I'll generate an image based on your prompt: "${message}"\n\nGenerating image...`,
@@ -32,9 +24,8 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Generate AI response
     const { text } = await generateText({
-      model: "openai/gpt-4o-mini",
+      model: provider,
       prompt: message,
       system: systemPrompt,
     })

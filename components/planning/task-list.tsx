@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { format } from "date-fns"
-import { Clock, Trash2 } from "lucide-react"
+import { Clock, Trash2 } from 'lucide-react'
 
 interface Task {
   id: string
@@ -23,9 +23,11 @@ interface Task {
 
 interface TaskListProps {
   userId: string
+  isReadOnly?: boolean
+  maxTasks?: number
 }
 
-export function TaskList({ userId }: TaskListProps) {
+export function TaskList({ userId, isReadOnly = false, maxTasks }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -84,8 +86,9 @@ export function TaskList({ userId }: TaskListProps) {
     <div className="flex items-start gap-3 rounded-lg border border-border p-3">
       <Checkbox
         checked={task.status === "completed"}
-        onCheckedChange={(checked) => updateTaskStatus(task.id, checked ? "completed" : "pending")}
+        onCheckedChange={(checked) => !isReadOnly && updateTaskStatus(task.id, checked ? "completed" : "pending")}
         className="mt-1"
+        disabled={isReadOnly} // Disable editing in read-only mode
       />
       <div className="flex-1">
         <h4 className={`font-medium ${task.status === "completed" ? "line-through text-muted-foreground" : ""}`}>
@@ -110,11 +113,15 @@ export function TaskList({ userId }: TaskListProps) {
           </div>
         </div>
       </div>
-      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteTask(task.id)}>
-        <Trash2 className="h-4 w-4 text-destructive" />
-      </Button>
+      {!isReadOnly && (
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteTask(task.id)}>
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      )}
     </div>
   )
+
+  const displayTasks = maxTasks ? tasks.slice(0, maxTasks) : tasks
 
   return (
     <Card className="h-full">
@@ -142,10 +149,10 @@ export function TaskList({ userId }: TaskListProps) {
             <TabsContent value="all" className="space-y-3">
               {isLoading ? (
                 <p className="text-sm text-muted-foreground">Loading tasks...</p>
-              ) : tasks.length === 0 ? (
+              ) : displayTasks.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No tasks yet</p>
               ) : (
-                tasks.map((task) => <TaskItem key={task.id} task={task} />)
+                displayTasks.map((task) => <TaskItem key={task.id} task={task} />)
               )}
             </TabsContent>
 

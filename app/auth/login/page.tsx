@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useState, useTransition } from "react"
 import { login } from "../actions"
+import { ArrowLeft } from 'lucide-react' // Added back button icon
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
@@ -31,6 +32,11 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-6">
       <div className="w-full max-w-md">
+        <Link href="/" className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          <span className="text-sm">Back to home</span>
+        </Link>
+        
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold tracking-tight">Legacy</h1>
           <p className="mt-2 text-muted-foreground">Advanced AI Assistant</p>

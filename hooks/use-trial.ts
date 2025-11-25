@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import type { AiMode } from "@/lib/ai-modes"
 
 const TRIAL_STORAGE_KEY = "legacy_trial_start"
-const TRIAL_DAYS = 3
+const TRIAL_DAYS = 999999 // Effectively unlimited
 
 export interface TrialStatus {
   isActive: boolean

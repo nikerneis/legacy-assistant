@@ -140,7 +140,7 @@ export function EventDialog({ userId, open, onOpenChange, selectedDate }: EventD
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+            <div>
               <DateTimePicker
                 id="start_time"
                 label="Start Time"
@@ -150,7 +150,7 @@ export function EventDialog({ userId, open, onOpenChange, selectedDate }: EventD
               />
             </div>
 
-            <div className="space-y-2">
+            <div>
               <DateTimePicker
                 id="end_time"
                 label="End Time"
@@ -160,7 +160,7 @@ export function EventDialog({ userId, open, onOpenChange, selectedDate }: EventD
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
               Cancel
             </Button>
